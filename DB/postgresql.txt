@@ -1,0 +1,40 @@
+# postgresql
+
+安装
+`yum install postgresql-server postgresql`
+
+初始化数据库
+`service postgresql initdb`
+
+启动数据库
+`service postgresql start`
+
+用户默认创建的postgres用户登陆
+`sudo -u postgres psql`
+
+创建自己的数据库用户和自己的库
+```
+CREATE USER "用户名" WITH PASSWORD '密码';
+CREATE DATABASE 数据库名 WITH OWNER "用户名";
+GRANT ALL PRIVILEGES ON DATABASE 数据库名 to 用户名;
+```
+
+用新创建的用户登陆数据库报如下错误
+`FATAL: Peer authentication failed for user "nginx2sql"`
+
+修改`/var/lib/pgsql/data/pg_hba.conf`的local和host记录改为trust解决。参考：http://www.jianshu.com/p/24207d55a122
+```
+# "local" is for Unix domain socket connections only
+local   all             all                                     trust
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            trust
+```
+---
+如果还是不能访问试着修改如下
+> 修改`/var/lib/pgsql/9.5/data/postgresql.conf`
+>
+> 将listen_addresses前的#去掉，并将 listen_addresses = 'localhost' 改成 listen_addresses = '*'； 
+
+
+
+
